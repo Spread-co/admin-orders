@@ -1,7 +1,7 @@
 {
   "name": "admin-orders",
-  "version": "0.1.1",
-  "description": "Admin order management panel for Spread.co — order listing, status tabs, search, date filters, order detail, refund actions",
+  "version": "0.1.2",
+  "description": "Admin order management panel for Spread.co — order listing, status tabs, search, date filters, order detail, refund actions; v0.1.2 adds processing/out_for_delivery/failed statuses and update_order_status RPC wiring",
   "scripts": {
     "build": "weweb build --name=admin-orders --type=element",
     "serve": "weweb serve"

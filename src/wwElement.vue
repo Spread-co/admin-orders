@@ -431,13 +431,16 @@ export default {
     },
     statusTabs() {
       return [
-        { label: 'All', value: '' },
-        { label: 'Paid', value: 'paid' },
-        { label: 'Confirmed', value: 'confirmed' },
-        { label: 'On Hold', value: 'on_hold' },
-        { label: 'Delivered', value: 'delivered' },
-        { label: 'Cancelled', value: 'cancelled' },
-        { label: 'Expired', value: 'expired' },
+        { label: 'All',              value: '' },
+        { label: 'Paid',             value: 'paid' },
+        { label: 'Confirmed',        value: 'confirmed' },
+        { label: 'Processing',       value: 'processing' },
+        { label: 'Out for Delivery', value: 'out_for_delivery' },
+        { label: 'On Hold',          value: 'on_hold' },
+        { label: 'Delivered',        value: 'delivered' },
+        { label: 'Cancelled',        value: 'cancelled' },
+        { label: 'Failed',           value: 'failed' },
+        { label: 'Expired',          value: 'expired' },
       ];
     },
     availableActions() {
@@ -445,25 +448,37 @@ export default {
       const s = this.detail.status;
       const actions = [];
 
+      // Forward progress transitions
       if (s === 'paid') {
-        actions.push({ label: 'Confirm', value: 'confirm', class: 'spread-ao__btn--primary' });
-        actions.push({ label: 'Hold', value: 'hold', class: 'spread-ao__btn--outline' });
-      }
-      if (s === 'paid' || s === 'confirmed') {
-        actions.push({ label: 'Deliver', value: 'deliver', class: 'spread-ao__btn--success' });
+        actions.push({ label: 'Confirm Order',     value: 'confirmed',        class: 'spread-ao__btn--primary' });
       }
       if (s === 'confirmed') {
-        actions.push({ label: 'Hold', value: 'hold', class: 'spread-ao__btn--outline' });
+        actions.push({ label: 'Mark Processing',   value: 'processing',       class: 'spread-ao__btn--primary' });
+      }
+      if (s === 'processing') {
+        actions.push({ label: 'Out for Delivery',  value: 'out_for_delivery', class: 'spread-ao__btn--primary' });
+      }
+      if (s === 'out_for_delivery') {
+        actions.push({ label: 'Mark Delivered',    value: 'delivered',        class: 'spread-ao__btn--success' });
+      }
+
+      // Hold / unhold
+      if (['confirmed', 'processing'].includes(s)) {
+        actions.push({ label: 'Place on Hold',     value: 'on_hold',          class: 'spread-ao__btn--outline' });
       }
       if (s === 'on_hold') {
-        actions.push({ label: 'Confirm', value: 'confirm', class: 'spread-ao__btn--primary' });
-        actions.push({ label: 'Unhold → Paid', value: 'unhold', class: 'spread-ao__btn--outline' });
+        actions.push({ label: 'Resume → Confirmed', value: 'confirmed',       class: 'spread-ao__btn--primary' });
       }
-      // Cancel and refund available on refundable statuses
-      const refundable = ['paid', 'confirmed', 'on_hold', 'delivered'];
+
+      // Cancel / fail / refund on non-terminal statuses
+      const nonTerminal = ['paid', 'confirmed', 'processing', 'on_hold'];
+      if (nonTerminal.includes(s)) {
+        actions.push({ label: 'Cancel',            value: 'cancelled',        class: 'spread-ao__btn--danger-outline' });
+        actions.push({ label: 'Mark Failed',       value: 'failed',           class: 'spread-ao__btn--danger-outline' });
+      }
+      const refundable = ['paid', 'confirmed', 'processing', 'on_hold', 'delivered'];
       if (refundable.includes(s)) {
-        actions.push({ label: 'Cancel', value: 'cancel', class: 'spread-ao__btn--danger-outline' });
-        actions.push({ label: 'Refund', value: 'refund', class: 'spread-ao__btn--danger' });
+        actions.push({ label: 'Issue Refund',      value: 'refund',           class: 'spread-ao__btn--danger' });
       }
       return actions;
     },
@@ -612,48 +627,14 @@ export default {
         return;
       }
 
-      if (action === 'cancel') {
-        this.actionLoading = true;
-        try {
-          await this.client().rpc('cancel_order_admin', {
-            p_order_id: orderId,
-            p_reason: 'Admin cancellation',
-          });
-
-          this.$emit('trigger-event', {
-            name: 'adminorders:statusChanged',
-            event: { orderId, newStatus: 'cancelled' },
-          });
-
-          await this.openDetail(orderId);
-          this.loadOrders();
-        } catch (err) {
-          this.$emit('trigger-event', {
-            name: 'adminorders:error',
-            event: { message: err.message || 'Cancel failed' },
-          });
-        } finally {
-          this.actionLoading = false;
-        }
-        return;
-      }
-
-      // Status transitions
-      const statusMap = {
-        confirm: 'confirmed',
-        deliver: 'delivered',
-        hold: 'on_hold',
-        unhold: 'paid',
-      };
-      const newStatus = statusMap[action];
-      if (!newStatus) return;
-
+      // All other actions are direct status transitions via update_order_status RPC
+      const newStatus = action; // action values are already the target status strings
       this.actionLoading = true;
       try {
-        await this.client().rpc('update_order_status_admin', {
-          p_order_id: orderId,
+        await this.client().rpc('update_order_status', {
+          p_order_id:   orderId,
           p_new_status: newStatus,
-          p_reason: `Admin: ${action}`,
+          p_note: `Admin action`,
         });
 
         this.$emit('trigger-event', {
@@ -893,6 +874,9 @@ export default {
 .spread-ao__status-badge--delivered { background: #dcfce7; color: #15803d; }
 .spread-ao__status-badge--cancelled { background: #fee2e2; color: var(--spread-error); }
 .spread-ao__status-badge--expired { background: #f3f4f6; color: var(--spread-mid-grey); }
+.spread-ao__status-badge--processing { background: #ede9fe; color: #6d28d9; }
+.spread-ao__status-badge--out_for_delivery { background: #fef3c7; color: #b45309; }
+.spread-ao__status-badge--failed { background: #fee2e2; color: #991b1b; }
 
 .spread-ao__dispute-badge {
   display: inline-block;
