@@ -1,0 +1,12 @@
+{
+  "name": "admin-orders",
+  "version": "0.1.1",
+  "description": "Admin order management panel for Spread.co — order listing, status tabs, search, date filters, order detail, refund actions",
+  "scripts": {
+    "build": "weweb build --name=admin-orders --type=element",
+    "serve": "weweb serve"
+  },
+  "devDependencies": {
+    "@weweb/cli": "^3.8.0"
+  }
+}
