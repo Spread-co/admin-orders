@@ -449,9 +449,8 @@ export default {
       const actions = [];
 
       // Forward progress transitions
-      if (s === 'paid') {
-        actions.push({ label: 'Confirm Order',     value: 'confirmed',        class: 'spread-ao__btn--primary' });
-      }
+      // 'paid' → 'confirmed' is automatic (fn_auto_confirm_paid_order trigger);
+      // admin workflow begins at 'confirmed'.
       if (s === 'confirmed') {
         actions.push({ label: 'Mark Processing',   value: 'processing',       class: 'spread-ao__btn--primary' });
       }
@@ -471,12 +470,12 @@ export default {
       }
 
       // Cancel / fail / refund on non-terminal statuses
-      const nonTerminal = ['paid', 'confirmed', 'processing', 'on_hold'];
+      const nonTerminal = ['confirmed', 'processing', 'on_hold'];
       if (nonTerminal.includes(s)) {
         actions.push({ label: 'Cancel',            value: 'cancelled',        class: 'spread-ao__btn--danger-outline' });
         actions.push({ label: 'Mark Failed',       value: 'failed',           class: 'spread-ao__btn--danger-outline' });
       }
-      const refundable = ['paid', 'confirmed', 'processing', 'on_hold', 'delivered'];
+      const refundable = ['confirmed', 'processing', 'on_hold', 'delivered'];
       if (refundable.includes(s)) {
         actions.push({ label: 'Issue Refund',      value: 'refund',           class: 'spread-ao__btn--danger' });
       }
