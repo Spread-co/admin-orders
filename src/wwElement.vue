@@ -1,5 +1,5 @@
 <template>
-  <div class="spread-ao">
+  <div v-if="!content.portalTarget || content.portalTarget === 'admin'" class="spread-ao">
     <!-- Header -->
     <div class="spread-ao__header">
       <h2 class="spread-ao__title">Orders</h2>
