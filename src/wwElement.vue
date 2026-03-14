@@ -1139,5 +1139,17 @@ export default {
 @media (min-width: 769px) {
   .spread-ao { padding: 20px 24px; }
 }
+@media (max-width: 479px) {
+  .spread-ao { padding: 12px; }
+}
+@media (min-width: 480px) {
+  .spread-ao { padding: 14px; }
+}
+@media (min-width: 1024px) {
+  .spread-ao { padding: 24px 32px; }
+}
+@media (min-width: 1280px) {
+  .spread-ao { padding: 28px 40px; }
+}
 @keyframes spread-perm-spin { to { transform: rotate(360deg); } }
 </style>
