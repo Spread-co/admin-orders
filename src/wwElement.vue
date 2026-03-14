@@ -712,6 +712,9 @@ export default {
   background: var(--spread-cream);
   border-radius: var(--spread-radius);
   padding: 24px;
+  max-width: 1440px;
+  margin-inline: auto;
+  box-sizing: border-box;
 }
 
 /* ── Header ────────────────────────────────────────────── */
