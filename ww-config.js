@@ -26,6 +26,13 @@ export default {
       defaultValue: '',
       hidden: true,
     },
+    userId: {
+      label: { en: 'User ID' },
+      type: 'Text',
+      bindable: true,
+      hidden: true,
+      defaultValue: '',
+    },
     pageSize: {
       label: { en: 'Page Size' },
       type: 'Number',
