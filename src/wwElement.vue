@@ -1110,4 +1110,8 @@ export default {
   .spread-ao__detail-grid { grid-template-columns: 1fr; }
   .spread-ao__tabs { overflow-x: auto; flex-wrap: nowrap; }
 }
+
+@media (min-width: 769px) {
+  .spread-ao { padding: 20px 24px; }
+}
 </style>
