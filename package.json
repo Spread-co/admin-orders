@@ -3,7 +3,7 @@
   "version": "0.1.11",
   "description": "Admin order management panel for Spread.co — order listing, status tabs, search, date filters, order detail, refund actions; v0.1.3 removes manual Confirm Order button (paid→confirmed is automatic via DB trigger)",
   "scripts": {
-    "build": "weweb build --name=admin-orders --type=element",
+    "build": "weweb build -- name=admin-orders type=element",
     "serve": "weweb serve"
   },
   "devDependencies": {
