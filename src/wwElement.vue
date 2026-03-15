@@ -1159,11 +1159,11 @@ export default {
 /* ── Dark mode ─────────────────────────────────────────────────────── */
 :global(html.dark) .spread-ao {
   background: #000000;
-  color: #f5f0eb;
+  color: #e6d8ca;
   --spread-cream: #18181b;
   --spread-border: rgba(230, 216, 202, 0.12);
   --spread-border-outer: rgba(230, 216, 202, 0.15);
-  --spread-text-primary: #f5f0eb;
+  --spread-text-primary: #e6d8ca;
   --spread-text-secondary: rgba(230, 216, 202, 0.65);
   --spread-text-muted: rgba(230, 216, 202, 0.4);
 }
@@ -1178,7 +1178,7 @@ export default {
 :global(html.dark) .spread-ao__badge--delivered { background: rgba(74,222,128,0.12); color: #4ade80; }
 :global(html.dark) .spread-ao__badge--cancelled { background: rgba(248,113,113,0.12); color: #f87171; }
 :global(html.dark) .spread-ao__filter-btn { background: #27272a; border-color: rgba(230,216,202,0.15); color: rgba(230,216,202,0.6); }
-:global(html.dark) .spread-ao__filter-btn--active { background: #4b162d; border-color: #4b162d; color: #f5f0eb; }
-:global(html.dark) .spread-ao__search { background: #160c11; border-color: rgba(230,216,202,0.2); color: #f5f0eb; }
+:global(html.dark) .spread-ao__filter-btn--active { background: #4b162d; border-color: #4b162d; color: #e6d8ca; }
+:global(html.dark) .spread-ao__search { background: #160c11; border-color: rgba(230,216,202,0.2); color: #e6d8ca; }
 :global(html.dark) .spread-ao__empty { color: rgba(230,216,202,0.4); }
 </style>
